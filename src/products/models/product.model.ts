@@ -5,9 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { Category } from '../../categories/models/category.model';
 import { Optional } from 'sequelize';
+import { InventoryTransaction } from '../../inventory/models/inventory-transaction.model';
 
 interface ProductAttributes {
   id: number;
@@ -65,4 +67,7 @@ export class Product extends Model<
 
   @BelongsTo(() => Category)
   declare category: Category;
+
+  @HasMany(() => InventoryTransaction)
+  declare transactions: InventoryTransaction[];
 }
