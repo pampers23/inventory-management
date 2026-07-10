@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from '../products/models/product.model';
 import {
@@ -39,5 +43,30 @@ export class InventoryService {
       message: 'Stock added successfully',
       product,
     };
+  }
+
+  async stockOut(stockOutDto: StockDto) {
+    const product = await this.productModel.findByPk(stockOutDto.productId);
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    if (product.stock < stockOutDto.quantity) {
+      throw new BadRequestException('Insuffcient Stock');
+    }
+
+    product.stock -= stockOutDto.quantity;
+
+    await product.save();
+
+    await this.inventoryModel.create({
+      productId: stockOutDto.productId,
+      quantity: stockOutDto.quantity,
+      remarks: stockOutDto.remarks,
+      type: TransactionType.OUT,
+    });
+
+    return { product, message: 'Stock remove successfully' };
   }
 }

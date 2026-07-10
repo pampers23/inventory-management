@@ -8,8 +8,13 @@ import { StockDto } from './dto/stock.dto';
 export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) {}
 
-  @Post('add-stock')
-  create(@Body() dto: StockDto) {
+  @Post('stock-in')
+  stockIn(@Body() dto: StockDto) {
     return this.inventoryService.create(dto);
+  }
+
+  @Post('stock-out')
+  stockOut(@Body() dto: StockDto) {
+    return this.inventoryService.stockOut(dto);
   }
 }
