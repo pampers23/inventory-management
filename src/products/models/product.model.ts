@@ -7,12 +7,26 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { Category } from '../../categories/models/category.model';
+import { Optional } from 'sequelize';
+
+interface ProductAttributes {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+}
+
+type ProductCreationAttributes = Optional<ProductAttributes, 'id'>;
 
 @Table({
   tableName: 'products',
   timestamps: true,
 })
-export class Product extends Model<Product> {
+export class Product extends Model<
+  ProductAttributes,
+  ProductCreationAttributes
+> {
   @Column({
     primaryKey: true,
     autoIncrement: true,
